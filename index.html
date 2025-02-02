@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+		<!-- Core theme CSS (includes Bootstrap)-->
+		<link href="styles.css" rel="stylesheet" />
+		<style>
+			.center {
+				margin: auto;
+				width: 50%;
+				padding: 10px;
+			}
+			.element {
+			  width: fit-content;
+			  height: 30px;
+			  display: inline-block;			  
+			}			
+			input[type=file]{
+			  width: 100%;
+			  padding: 12px 20px;
+			  <!-- margin: 8px 0; -->
+			  display: inline-block;
+			  border: 1px solid #ccc;
+			  border-radius: 4px;
+			  box-sizing: border-box;
+			}
+			.button-container {
+			  display: flex;
+			  padding: 12px 20px;
+			}
+			ul {
+				display: table; 
+				margin: 0 auto;
+				text-align: left;
+			}
+		</style>
+		<script src="./main.js"></script>
+</head>
+	<body>
+		<div class="center"> 			
+			<input type='file' onchange='openFile(event)'>					
+			<br>
+			<div class="button-container">
+				<button style="width: 50%" onclick="startWorker()">Start Worker</button> 
+				<button style="width: 50%" onclick="stopWorkers()">Stop Workers</button>									
+			</div>
+			<ul id="resort"></ul> 				
+		</div> 
+		
+	</body>
+</html>
+
+
+
+<!-- https://www.scaler.com/topics/javascript-multithreading/ -->
+<!-- https://www.youtube.com/watch?v=cP5E0b21f_Y -->
