@@ -40,7 +40,7 @@ function startWorker() {
   }
 }
 
-function stopWorkers() { 
+function stopWorkers() {
 
   while(workers.size > 0) {
 		var workerIndex = --index;
