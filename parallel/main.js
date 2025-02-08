@@ -1,52 +1,49 @@
-const canvas = document.getElementById("canvas");
-const offscreen = canvas.transferControlToOffscreen();
-
 const workerCode = document.querySelector('#workerCode').textContent;
 const blob = new Blob([workerCode], { type: 'text/javascript' });
 const url = URL.createObjectURL(blob);
 
 var worker;
+var index = 0;
 
+const workers = new Map();
 
 function startWorker() {
-  var hasOffscreenSupport = !!canvas.transferControlToOffscreen;
-  if (hasOffscreenSupport) {
     if(typeof(Worker) !== "undefined") {
 
-      var workerName = 'Worker1';
-      if (worker == null) {
-       worker = new Worker(url);
-       worker.postMessage({ msg: 'start', name: workerName, canvas: offscreen },
-             [offscreen]);
-      } else {
-        worker.postMessage({ msg: 'start', name: workerName });
-      }
+      var workerIndex = index++;
+      var workerName = 'Worker' + workerIndex;
+      var worker =  new Worker(url);
+      workers.set(workerName, {index: workerIndex, worker: worker});
 
-      worker.addEventListener("message", e => {
-        if (e.data) {
-          const listItem = document.createElement("li");
-          listItem.textContent = e.data[0] + '|' + e.data[1];
-          resort.appendChild(listItem);
-        }
-      })
+      createLi(workerIndex);
+      const canvas = document.getElementById("canvas_" + workerIndex);
+      const offscreen = canvas.transferControlToOffscreen();
 
+      worker.postMessage({ msg: 'start', name: workerName, canvas: offscreen }, [offscreen]);
     } else {
      document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers...";
     }
-  } else {
-    canvas
-      .getContext('2d')
-      .fillText(
-      'Sorry, your browser does not support Offscreen rendering...',
-      20,
-      20
-      );
-  }
 }
 
-function pauseWorker() {
-		var workerName = 'Worker1';
-		worker.postMessage({msg: 'stop', name: workerName});
-		// worker.terminate();
-		// worker = undefined;
+function stopWorkers() {
+    while(workers.size > 0){
+      var entry = workers.entries().next().value;
+      var workerName = entry[0];
+      var worker = entry[1].worker;
+      worker.postMessage({msg: 'stop', name: workerName});
+      workers.delete(workerName);
+    }
+
+    document.getElementById("resort").innerHTML = "";
+}
+
+function createCanvas(canvasId){
+    return '<canvas id="canvas_' + canvasId + '" width="1000" height="500" style="border: 1px solid;"></canvas>';
+}
+
+function createLi(id){
+    var listItem = document.createElement("li");
+    var child = createCanvas(id);
+    listItem.innerHTML = createCanvas(id);
+    resort.appendChild(listItem);
 }
