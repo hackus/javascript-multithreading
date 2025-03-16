@@ -1,4 +1,4 @@
-# javascript-mutithreading
+# javascript-multithreading
 Describes how to use threads in JavaScript
 
 
